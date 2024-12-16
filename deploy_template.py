@@ -14,7 +14,8 @@ def deploy_template(
     serialized_config: Dict,
     template_id: str,
     project_id: str,
-    environment_id: str
+    environment_id: str,
+    team_id: str
 ) -> Dict:
     """
     Deploy a template to Railway
@@ -25,6 +26,7 @@ def deploy_template(
         template_id (str): ID of the template to deploy
         project_id (str): ID of the project to deploy to
         environment_id (str): ID of the environment to deploy to
+        team_id (str): ID of the team to deploy under
         
     Returns:
         Dict: Deployment result containing project ID
@@ -34,7 +36,8 @@ def deploy_template(
             "serializedConfig": serialized_config,
             "templateId": template_id,
             "projectId": project_id,
-            "environmentId": environment_id
+            "environmentId": environment_id,
+            "teamId": team_id
         }
     }
     

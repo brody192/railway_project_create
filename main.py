@@ -46,7 +46,8 @@ try:
         serialized_config=serialized_config,
         template_id=template_result['id'],
         project_id=project_result['id'],
-        environment_id=project_result['environments']['edges'][0]['node']['id']
+        environment_id=project_result['environments']['edges'][0]['node']['id'],
+        team_id=os.getenv("RAILWAY_TEAM_ID", None)
     )
 
     # Print the new project's URL
