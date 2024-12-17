@@ -9,12 +9,16 @@ def update_service_repo(serialized_config, service_name, new_repo):
     
     Returns:
         dict: Updated serialized config
+        
+    Raises:
+        ValueError: If the service is not found or if the service doesn't have a repository configuration
     """
     for service_id, service_info in serialized_config['services'].items():
         if service_info.get('name') == service_name:
-            if 'source' in service_info and 'repo' in service_info['source']:
-                service_info['source']['repo'] = new_repo
-                return serialized_config
+            if not ('source' in service_info and 'repo' in service_info['source']):
+                raise ValueError(f"Service '{service_name}' exists but does not have a repository configuration")
+            service_info['source']['repo'] = new_repo
+            return serialized_config
     
     raise ValueError(f"Service '{service_name}' not found in config")
 
