@@ -26,14 +26,14 @@ try:
     )
     serialized_config = template_result['serializedConfig']
     
-    # Update the repository URL for a service
+    # Example (Optional) - Update the repository URL for a service
     serialized_config = update_service_repo(
         serialized_config,
         service_name="hello-world", # Replace with the service name you want to update
         new_repo="https://github.com/brody192/302-redir" # Replace with the new repository URL
     )
     
-    # Update the name of a service
+    # Example (Optional) - Update the name of a service
     serialized_config = update_service_name(
         serialized_config,
         old_name="hello-world", # Replace with the old service name
