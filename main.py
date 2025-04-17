@@ -1,5 +1,5 @@
 import os
-from utils import update_service_repo, update_service_name, print_services
+from utils import update_service_repo, update_service_name, print_services, enable_serverless, get_all_service_names
 from client import get_client
 from project_create import create_project
 from get_template import get_template
@@ -11,14 +11,6 @@ client = get_client(
 )
 
 try:
-    # Create the project
-    project_result = create_project(
-        client=client,
-        name="Panera Project", # Replace with the name of the project
-        description="A project for Panera Bread redirect service", # Replace with the description of the project
-        team_id=os.getenv("RAILWAY_TEAM_ID", None)
-    )
-    
     # Get the template configuration
     template_result = get_template(
         client=client,
@@ -38,6 +30,23 @@ try:
         serialized_config,
         old_name="hello-world", # Replace with the old service name
         new_name="panera-bread" # Replace with the new service name
+    )
+
+    # Example (Optional) - Enable serverless mode on a single service
+    serialized_config = enable_serverless(serialized_config, "panera-bread")
+
+    # Example (Optional) - Enable serverless mode on just the databases
+    # serialized_config = enable_serverless(serialized_config, ["Redis", "Postgres"])
+
+    # Example (Optional) - Enable serverless mode on all services
+    # serialized_config = enable_serverless(serialized_config, get_all_service_names(serialized_config))
+
+    # Create the project
+    project_result = create_project(
+        client=client,
+        name="Panera Project", # Replace with the name of the project
+        description="A project for Panera Bread redirect service", # Replace with the description of the project
+        team_id=os.getenv("RAILWAY_TEAM_ID", None)
     )
     
     # Deploy the template

@@ -56,4 +56,61 @@ def print_services(serialized_config: dict) -> None:
             if 'image' in service_info['source']:
                 print(f"  Image: {service_info['source']['image']}")
             if 'repo' in service_info['source']:
-                print(f"  Repo: {service_info['source']['repo']}") 
+                print(f"  Repo: {service_info['source']['repo']}")
+
+def enable_serverless(serialized_config, service_names):
+    """
+    Enable serverless mode for one or more services in the serialized config.
+    
+    Args:
+        serialized_config (dict): The template's serialized configuration
+        service_names (str or list): Single service name or array of service names to enable serverless mode for
+    
+    Returns:
+        dict: Updated serialized config
+        
+    Raises:
+        ValueError: If any of the services are not found
+    """
+    # Convert single service name to list for consistent handling
+    if isinstance(service_names, str):
+        service_names = [service_names]
+    
+    # First validate all services exist
+    not_found = []
+    for service_name in service_names:
+        found = False
+        for service_info in serialized_config['services'].values():
+            if service_info.get('name') == service_name:
+                found = True
+                break
+        if not found:
+            not_found.append(service_name)
+    
+    if not_found:
+        raise ValueError(f"Services not found in config: {', '.join(not_found)}")
+    
+    # If all services exist, then enable serverless mode
+    for service_name in service_names:
+        for service_info in serialized_config['services'].values():
+            if service_info.get('name') == service_name:
+                if 'deploy' not in service_info:
+                    service_info['deploy'] = {}
+                service_info['deploy']['sleepApplication'] = True
+                break
+    
+    return serialized_config
+
+def get_all_service_names(serialized_config):
+    """
+    Get all service names from the serialized configuration.
+    
+    Args:
+        serialized_config (dict): The template's serialized configuration
+    
+    Returns:
+        list: Array of all service names
+    """
+    return [service_info.get('name') 
+            for service_info in serialized_config['services'].values() 
+            if service_info.get('name') is not None] 
