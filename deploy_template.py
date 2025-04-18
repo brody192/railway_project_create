@@ -1,10 +1,13 @@
 from gql import gql
 from typing import Dict, Any
+import time
+from workflow_status import get_workflow_status
 
 deploy_mutation = gql("""
     mutation DeployTemplate($input: TemplateDeployV2Input!) {
         templateDeployV2(input: $input) {
             projectId
+            workflowId
         }
     }
 """)
@@ -41,5 +44,20 @@ def deploy_template(
         }
     }
     
-    result = client.execute(deploy_mutation, variable_values=deploy_input)
-    return result['templateDeployV2'] 
+    result = client.execute(deploy_mutation, variable_values=deploy_input)['templateDeployV2']
+
+    while True:
+        workflow_status = get_workflow_status(
+            client=client,
+            workflow_id=result['workflowId']
+        )
+
+        if workflow_status['status'] == 'Complete':
+            break
+
+        if workflow_status['error'] != None:
+            raise Exception(f"Deployment failed: {workflow_status['error']}")
+
+        time.sleep(1)
+
+    return result
