@@ -113,4 +113,28 @@ def get_all_service_names(serialized_config):
     """
     return [service_info.get('name') 
             for service_info in serialized_config['services'].values() 
-            if service_info.get('name') is not None] 
+            if service_info.get('name') is not None]
+
+def set_upstream_url_null(serialized_config, service_name):
+    """
+    Set the source.upstreamUrl to null for a specific service in the serialized config.
+    Service must have a source.repo field for this operation to be valid.
+    
+    Args:
+        serialized_config (dict): The template's serialized configuration
+        service_name (str): The name of the service to update
+    
+    Returns:
+        dict: Updated serialized config
+        
+    Raises:
+        ValueError: If the service is not found or if service doesn't have a repo configuration
+    """
+    for service_id, service_info in serialized_config['services'].items():
+        if service_info.get('name') == service_name:
+            if not ('source' in service_info and 'repo' in service_info['source']):
+                raise ValueError(f"Service '{service_name}' exists but does not have a repository configuration")
+            service_info['source']['upstreamUrl'] = None
+            return serialized_config
+    
+    raise ValueError(f"Service '{service_name}' not found in config") 

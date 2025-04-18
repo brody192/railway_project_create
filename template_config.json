@@ -1,0 +1,183 @@
+{
+  "services": {
+    "52f4058d-b6af-4827-96d3-5857041a2dd2": {
+      "icon": "https://devicons.railway.app/i/redis.svg",
+      "name": "Redis",
+      "build": {},
+      "deploy": {},
+      "source": {
+        "image": "bitnami/redis:7.2.5"
+      },
+      "variables": {
+        "REDISHOST": {
+          "isOptional": false,
+          "description": "Railway Private Domain Name.",
+          "defaultValue": "${{ RAILWAY_PRIVATE_DOMAIN }}"
+        },
+        "REDISPORT": {
+          "isOptional": false,
+          "description": "Port to connect to Redis.",
+          "defaultValue": "6379"
+        },
+        "REDISUSER": {
+          "isOptional": false,
+          "description": "Default user to connect to Redis.",
+          "defaultValue": "default"
+        },
+        "REDIS_URL": {
+          "isOptional": false,
+          "description": "URL to connect to Redis over the private network.",
+          "defaultValue": "redis://default:${{ REDIS_PASSWORD }}@${{ RAILWAY_PRIVATE_DOMAIN }}:6379"
+        },
+        "REDISPASSWORD": {
+          "isOptional": false,
+          "description": "Password to connect to Redis.",
+          "defaultValue": "${{ REDIS_PASSWORD }}"
+        },
+        "REDIS_PASSWORD": {
+          "isOptional": false,
+          "description": "Password to connect to Redis.",
+          "defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}"
+        },
+        "RAILWAY_RUN_UID": {
+          "isOptional": false,
+          "description": "Start Redis process as root to allow for writing to the volume",
+          "defaultValue": "0"
+        },
+        "REDIS_PUBLIC_URL": {
+          "description": "Public URL to connect to Redis, needed for the Data panel.",
+          "defaultValue": "redis://default:${{ REDIS_PASSWORD }}@${{ RAILWAY_TCP_PROXY_DOMAIN }}:${{ RAILWAY_TCP_PROXY_PORT }}"
+        },
+        "REDIS_RDB_POLICY": {
+          "description": "Set a RDB snapshot policy.",
+          "defaultValue": "3600#1 300#100 60#10000"
+        },
+        "REDIS_AOF_ENABLED": {
+          "description": "Disable writing to AOF file.",
+          "defaultValue": "no"
+        },
+        "RAILWAY_RUN_AS_ROOT": {
+          "isOptional": false,
+          "description": "Start Redis process as root to allow for writing to the volume",
+          "defaultValue": "true"
+        }
+      },
+      "networking": {
+        "tcpProxies": {
+          "6379": {}
+        },
+        "serviceDomains": {}
+      },
+      "volumeMounts": {
+        "52f4058d-b6af-4827-96d3-5857041a2dd2": {
+          "mountPath": "/bitnami"
+        }
+      }
+    },
+    "551ca5b3-26c4-4301-a528-9121702a6809": {
+      "icon": "https://devicons.railway.app/i/postgresql.svg",
+      "name": "Postgres",
+      "build": {},
+      "deploy": {},
+      "source": {
+        "image": "ghcr.io/railwayapp-templates/postgres-ssl:16"
+      },
+      "variables": {
+        "PGDATA": {
+          "isOptional": false,
+          "description": "Location where the database will be initialized",
+          "defaultValue": "/var/lib/postgresql/data/pgdata"
+        },
+        "PGHOST": {
+          "isOptional": false,
+          "description": "Railway Private Domain Name.",
+          "defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}"
+        },
+        "PGPORT": {
+          "isOptional": false,
+          "description": "Port to connect to Postgres.",
+          "defaultValue": "5432"
+        },
+        "PGUSER": {
+          "isOptional": false,
+          "description": "Required variable for Data panel",
+          "defaultValue": "${{ POSTGRES_USER }}"
+        },
+        "PGDATABASE": {
+          "isOptional": false,
+          "description": "Required variable for the data panel.",
+          "defaultValue": "${{POSTGRES_DB}}"
+        },
+        "PGPASSWORD": {
+          "isOptional": false,
+          "description": "Required variable for Data panel",
+          "defaultValue": "${{POSTGRES_PASSWORD}}"
+        },
+        "POSTGRES_DB": {
+          "isOptional": false,
+          "description": "Default database created when image is started.",
+          "defaultValue": "railway"
+        },
+        "DATABASE_URL": {
+          "isOptional": false,
+          "description": "URL to connect to Postgres database.",
+          "defaultValue": "postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}"
+        },
+        "POSTGRES_USER": {
+          "isOptional": false,
+          "description": "User to connect to Postgres DB",
+          "defaultValue": "postgres"
+        },
+        "SSL_CERT_DAYS": {
+          "isOptional": true,
+          "description": "SSL certificate expiry in days.",
+          "defaultValue": "820"
+        },
+        "POSTGRES_PASSWORD": {
+          "isOptional": false,
+          "description": "Password to connect to DB",
+          "defaultValue": "${{ secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\") }}"
+        },
+        "DATABASE_PUBLIC_URL": {
+          "description": "Public URL to connect to Postgres database, used by the Data panel.",
+          "defaultValue": "postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}/${{PGDATABASE}}"
+        }
+      },
+      "networking": {
+        "tcpProxies": {
+          "5432": {}
+        },
+        "serviceDomains": {}
+      },
+      "volumeMounts": {
+        "551ca5b3-26c4-4301-a528-9121702a6809": {
+          "mountPath": "/var/lib/postgresql/data"
+        }
+      }
+    },
+    "d4efaf79-fc46-4ed3-bb78-8b72c4257739": {
+      "name": "panera-bread",
+      "source": {
+        "repo": "https://github.com/brody192/302-redir",
+        "branch": null,
+        "rootDirectory": null,
+        "upstreamUrl": null
+      },
+      "variables": {
+        "REDIS_URL": {
+          "isOptional": false,
+          "description": "",
+          "defaultValue": "${{Redis.REDIS_URL}}"
+        },
+        "DATABASE_URL": {
+          "isOptional": false,
+          "description": "",
+          "defaultValue": "${{Postgres.DATABASE_URL}}"
+        }
+      },
+      "deploy": {
+        "sleepApplication": true
+      }
+    }
+  }
+}

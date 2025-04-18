@@ -1,5 +1,5 @@
-import os
-from utils import update_service_repo, update_service_name, print_services, enable_serverless, get_all_service_names
+import os, json
+from utils import update_service_repo, update_service_name, print_services, enable_serverless, get_all_service_names, set_upstream_url_null
 from client import get_client
 from project_create import create_project
 from get_template import get_template
@@ -32,6 +32,12 @@ try:
         new_name="panera-bread" # Replace with the new service name
     )
 
+    # Example (Optional) - Set the upstream URL to null for a service
+    serialized_config = set_upstream_url_null(
+        serialized_config,
+        service_name="panera-bread" # Replace with the service name you want to update
+    )
+
     # Example (Optional) - Enable serverless mode on a single service
     serialized_config = enable_serverless(serialized_config, "panera-bread")
 
@@ -40,6 +46,9 @@ try:
 
     # Example (Optional) - Enable serverless mode on all services
     # serialized_config = enable_serverless(serialized_config, get_all_service_names(serialized_config))
+
+    with open('template_config.json', 'w') as f:
+        json.dump(serialized_config, f, indent=2)
 
     # Create the project
     project_result = create_project(
